@@ -41,8 +41,10 @@ else
 	echo "-----> Installing TCL $TCL_VER..... [done ]!"
 fi
 
-#alias q="rlwrap $QHOME/l32/q"
-#apt-get install ia32-libs && yum install rlwrap
+# copy over environment
+mkdir -p $BUILD_DIR/.profile.d
+cp $(dirname $0)/tcl_environment.sh $BUILD_DIR/.profile.d/tcl_environment.sh
+
 
 if [ ! -f $BUILD_DIR/init.tcl ] ; then
 	echo "Failed to run app with TCL/tk"
