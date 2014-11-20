@@ -1,0 +1,71 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir>
+
+# fail fast
+set -e
+
+# parse args
+BUILD_DIR=$1
+CACHE_DIR=$2
+
+# <BUILD_DIR> is (during this stage) a temporary directory. 
+# During execution of your slug it'll be known as '/app'.
+
+
+. $(dirname $0)/common
+
+
+BIN_DIR=$(cd $(dirname $0); pwd) # absolute path
+
+function indent() {
+  c='s/^/       /'
+  case $(uname) in
+    Darwin) sed -l "$c";;
+    *)      sed -u "$c";;
+  esac
+}
+
+
+#create the cache dir if it doesn't exist
+
+# change to vendoring dir to install kx tcl
+
+if [ -x $TCL_HOME/install/bin/wish ] ; then
+    #assuming tcl is already installed...
+	echo "-----> Using TCL $TCL_VER....."
+else
+	echo "-----> Installing TCL $TCL_VER...from '$TCL_URL' ... [start]"
+	mkdir -p $TCL_HOME && curl $TCL_URL -s -o - | tar xzf - -C $TCL_HOME
+	
+	sh $TCL_HOME/Active*/install.sh --directory $TCL_HOME/install
+	echo "-----> Installing TCL $TCL_VER..... [done ]!"
+fi
+
+#alias q="rlwrap $QHOME/l32/q"
+#apt-get install ia32-libs && yum install rlwrap
+
+if [ ! -f $BUILD_DIR/init.tcl ] ; then
+	echo "Failed to run app with TCL/tk"
+fi
+
+	
+# change to build dir to run ant
+cd ${BUILD_DIR}
+
+# build app
+BUILDCMD="$TCL_HOME/install/bin/tclsh init.tcl"
+echo "-----> executing $BUILDCMD"
+
+PATH=$PATH:$TCL_HOME/install/bin
+echo "PATH is $PATH"
+
+
+$BUILDCMD 2>&1 | indent
+ls -al ${PWD}  | indent
+
+ls -al ${BUILD_DIR}  | indent
+
+if [ "${PIPESTATUS[*]}" != "0 0" ]; then
+  echo " !     Failed to build app with tcl "
+  exit 1
+fi
