@@ -56,7 +56,7 @@ cd ${BUILD_DIR}
 BUILDCMD="$TCL_HOME/install/bin/tclsh init.tcl"
 echo "-----> executing $BUILDCMD"
 
-PATH=$PATH:$TCL_HOME/install/bin
+export PATH=$PATH:$TCL_HOME/install/bin
 echo "PATH is $PATH"
 
 
