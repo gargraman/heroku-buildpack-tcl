@@ -36,8 +36,8 @@ if [ -x $TCL_HOME/install/bin/wish ] ; then
 else
 	echo "-----> Installing TCL $TCL_VER...from '$TCL_URL' ... [start]"
 	mkdir -p $TCL_HOME && curl $TCL_URL -s -o - | tar xzf - -C $TCL_HOME
-	
-	sh $TCL_HOME/Active*/install.sh --directory $TCL_HOME/install
+	mkdir -p /app/vendor/tcl	
+	sh $TCL_HOME/Active*/install.sh --directory /app/vendor/tcl
 	echo "-----> Installing TCL $TCL_VER..... [done ]!"
 fi
 
@@ -55,12 +55,8 @@ fi
 cd ${BUILD_DIR}
 
 # build app
-BUILDCMD="$TCL_HOME/install/bin/tclsh init.tcl"
+BUILDCMD="/app/vendor/tcl/bin/tclsh init.tcl"
 echo "-----> executing $BUILDCMD"
-
-export PATH=$PATH:$TCL_HOME/install/bin
-echo "PATH is $PATH"
-
 
 $BUILDCMD 2>&1 | indent
 ls -al ${PWD}  | indent
