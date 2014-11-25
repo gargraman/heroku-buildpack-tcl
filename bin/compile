@@ -8,6 +8,12 @@ set -e
 BUILD_DIR=$1
 CACHE_DIR=$2
 
+echo "-----> compile called with arguments....."
+echo "\$0----->$0"
+echo "\$1----->$1"
+echo "\$2----->$2"
+echo "\$3----->$3"
+
 # <BUILD_DIR> is (during this stage) a temporary directory. 
 # During execution of your slug it'll be known as '/app'.
 
